@@ -1,10 +1,186 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+namespace PPart1
+{
+    internal class Program
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    {
+        static void Main(string[] args)
+        {
+            //--------------Creating a new recipe--------------//
+            var recipe = new Recipe();
 
-</Project>
+            //-----------Step 1: Register ingredients-------------//
+            recipe.RegisterIngredients();
+
+            //---------Step 2: Blending ingredients--------------//
+            recipe.BlendIngredients();
+
+            //---------Step 3: Preheat the oven----------------//
+            recipe.PreheatOven();
+
+            //---------Display the final recipe----------------//
+            recipe.DisplayRecipe();
+
+            //---------Offer options to the user-----------------//
+            recipe.OfferOptions();
+        }
+    }
+
+    //---------Class to represent a recipe---------------------//
+    internal class Recipe
+    {
+        private string[] ingredients = new string[3];
+        private string[] quantities = new string[3];
+        private string[] measurements = new string[3];
+        private string selectedMeat;
+        private string blendedIngredient;
+
+        //---------Method to register ingredients--------------//
+        public void RegisterIngredients()
+        {
+            Console.WriteLine("Welcome to the Recipes Application!");
+            Console.WriteLine("Please follow the steps carefully for a perfect Recipe!");
+            Console.WriteLine("STEP 1: Register the main 3 ingredients, The Quantity, and the Measurement");
+
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine($"\nPlease Enter Ingredient {i + 1} Name:");
+                ingredients[i] = Console.ReadLine();
+                Console.WriteLine($"Please Enter Quantity for Ingredient {i + 1}:");
+                quantities[i] = Console.ReadLine();
+                Console.WriteLine($"Please Enter Measurement for Ingredient {i + 1}:");
+                measurements[i] = Console.ReadLine();
+            }
+        }
+
+        //---------Method to blend ingredients------------------//
+        public void BlendIngredients()
+        {
+            Console.WriteLine("\nSTEP 2: Blending ingredients");
+            Console.WriteLine("Enter 1 for Ingredient 1, 2 for Ingredient 2, and 3 for Ingredient 3");
+
+            string blendChoice;
+            do
+            {
+                Console.WriteLine("Please select an ingredient to blend (1/2/3):");
+                blendChoice = Console.ReadLine();
+            } while (blendChoice != "1" && blendChoice != "2" && blendChoice != "3");
+
+            Console.WriteLine("Blending...");
+            int chosenIngredientIndex = int.Parse(blendChoice) - 1;
+            blendedIngredient = ingredients[chosenIngredientIndex];
+        }
+
+        //---------Method to preheat the oven------------------//
+        public void PreheatOven()
+        {
+            Console.WriteLine("\nSTEP 3: Preheat the oven to 350°F");
+
+            Console.WriteLine("Please select a meat:");
+            Console.WriteLine("1. Sausage with Spinach");
+            Console.WriteLine("2. Chicken with Mushrooms");
+
+            string meatChoice;
+            do
+            {
+                Console.WriteLine("Enter your choice (1/2):");
+                meatChoice = Console.ReadLine();
+            } while (meatChoice != "1" && meatChoice != "2");
+
+            selectedMeat = meatChoice == "1" ? "Sausage with Spinach" : "Chicken with Mushrooms";
+        }
+
+        //---------Method to display the recipe-------------//
+        public void DisplayRecipe()
+        {
+            Console.WriteLine("\nHere's your full recipe based on your choices:");
+            Console.WriteLine($"Meat: {selectedMeat}");
+            Console.WriteLine($"Blended Ingredient: {blendedIngredient}");
+            Console.WriteLine("*");
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine($"Ingredient {i + 1}: {quantities[i]} {measurements[i]} of {ingredients[i]}");
+            }
+            Console.WriteLine("*");
+            Console.WriteLine("Follow the steps carefully and enjoy your meal!");
+        }
+
+        //---------Method to offer options to the user--------//
+        public void OfferOptions()
+        {
+            bool continueOption = true;
+            while (continueOption)
+            {
+                Console.WriteLine("\nOptions:");
+                Console.WriteLine("1. Scale Recipe");
+                Console.WriteLine("2. Reset Quantities");
+                Console.WriteLine("3. Clear Data and Enter a New Recipe");
+                Console.WriteLine("4. Exit");
+
+                Console.WriteLine("Enter your choice:");
+                string option = Console.ReadLine();
+
+                switch (option)
+                {
+                    case "1":
+                        ScaleRecipe();
+                        DisplayRecipe();
+                        break;
+                    case "2":
+                        ResetQuantities();
+                        DisplayRecipe();
+                        break;
+                    case "3":
+                        ClearData();
+                        Environment.Exit(0); // Exit the application for a new recipe
+                        break;
+                    case "4":
+                        continueOption = false;
+                        Console.WriteLine("Thank you for using the Recipes Application!");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        //---------Method to scale the recipe--------------//
+        private void ScaleRecipe()
+        {
+            Console.WriteLine("\nEnter the scaling factor (0.5 for half, 2 for double, 3 for triple):");
+            double factor;
+            while (!double.TryParse(Console.ReadLine(), out factor) || (factor != 0.5 && factor != 2 && factor != 3))
+            {
+                Console.WriteLine("Invalid input. Please enter 0.5, 2, or 3.");
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                double originalQuantity;
+                if (double.TryParse(quantities[i], out originalQuantity))
+                {
+                    quantities[i] = (originalQuantity * factor).ToString();
+                }
+            }
+
+            Console.WriteLine("Recipe scaled successfully!");
+        }
+
+        //---------Method to reset ingredient quantities---------//
+        private void ResetQuantities()
+        {
+            Console.WriteLine("Quantities reset to original values.");
+            //------------Original quantities could be stored in separate arrays for reset functionality-------------//
+        }
+
+        //-------------------Method to clear data------------------------//
+        private void ClearData()
+        {
+            Array.Clear(ingredients, 0, ingredients.Length);
+            Array.Clear(quantities, 0, quantities.Length);
+            Array.Clear(measurements, 0, measurements.Length);
+            Console.WriteLine("All data cleared for a new recipe.");
+        }
+    }
+}
+
